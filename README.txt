@@ -3,6 +3,27 @@ README.txt for MacPherson, R.A. et al., "Pleiotropic Fitness Effects of the lncR
 
 Files
 
+NTR_RNAseq
+-- directory containing code and readcounts files for generation of differential expression data for NTRs
+
+bulk_RNAseq
+-- directory containing code for generation of differential expression data for non-NTR genes
+
+sleep_activity_foranalysis
+-- directory containing trimmed and clean sleep and activity data for statistical analysis
+
+sleep_activity_raw
+-- directory containing raw sleep and activity data from DAM system
+
+behavioral_analyses_Rcode
+-- R code used for analysis of behaviors, such as Fisher's exact tests
+
+behavioral_analyses_SAScode
+-- SAS code used for analysis of behaviors, including ANOVAs
+
+graphs_Rcode.R
+-- R code used to generate graphs, such as those in Figure 4
+
 qPCR_knockdown.xlsx
 -- quantitative real time PCR quantification of Uhg4 knockdown in the Uhg4 deletion lines, with delta-delta ct values for the control and deletion lines
 
