@@ -1,5 +1,5 @@
 README.txt for MacPherson, R.A. et al., "Pleiotropic Fitness Effects of the lncRNA Uhg4 in Drosophila melanogaster"
-
+Relevant GEO Accession number: GSE199865
 
 Files
 
