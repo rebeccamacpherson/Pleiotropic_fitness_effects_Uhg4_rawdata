@@ -1,0 +1,77 @@
+
+# R code for Behavioral Analyses
+#last Edited 03-19-2022 by Rebecca MacPherson
+
+### Chill Coma - Fishers Exact test for flies that did vs did not wake
+
+#pooled analyses
+counts_matrix<-matrix(c(107, 311, 7, 37),
+  nrow = 2,
+  dimnames = list(Line = c("208wt","208pooled"), Tap = c("Wake", "DNW")))
+fisher.test(counts_matrix)
+
+#individual pairwise analyses
+counts_matrix<-
++ matrix(c(107, 107, 7, 5),
++          nrow = 2,
++          dimnames = list(Line = c("208wt","208A"), Tap = c("Wake", "DNW")))
+fisher.test(counts_matrix)
+
+counts_matrix<-
++   matrix(c(107, 103, 7, 15),
++          nrow = 2,
++          dimnames = list(Line = c("208wt","208F"), Tap = c("Wake", "DNW")))
+fisher.test(counts_matrix)
+
+counts_matrix<-
++   matrix(c(107, 101, 7, 17),
++          nrow = 2,
++          dimnames = list(Line = c("208wt","208G"), Tap = c("Wake", "DNW")))
+fisher.test(counts_matrix)
+
+
+
+### Mating - Fishers Exact test for pairs that did vs did not mate
+
+counts_matrix<-
+  matrix(c(19, 16, 3, 8),
+         nrow = 2,
+         dimnames = list(Line = c("Control","G_Mxwt_F"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+counts_matrix<-
+  matrix(c(19, 17, 3, 7),
+         nrow = 2,
+         dimnames = list(Line = c("Control","208G"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+
+counts_matrix<-
+  matrix(c(19, 18, 3, 5),
+         nrow = 2,
+         dimnames = list(Line = c("Control","208A"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+
+counts_matrix<-
+  matrix(c(19, 19, 3, 4),
+         nrow = 2,
+         dimnames = list(Line = c("Control","208A"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+
+counts_matrix<-
+  matrix(c(19, 18, 3, 5),
+         nrow = 2,
+         dimnames = list(Line = c("Control","wt_Mx208G_F"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+
+counts_matrix<-
+  matrix(c(19, 54, 3, 16),
+         nrow = 2,
+         dimnames = list(Line = c("Control","pooled mutants"), Tap = c("Mated", "Not Mated")))
+fisher.test(counts_matrix)
+
+
+

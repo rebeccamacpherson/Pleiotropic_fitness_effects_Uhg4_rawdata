@@ -1,0 +1,5 @@
+SOURCE: /data/Palmetto_sync/Projects/rajones_uhg4-208_rna/2_gsnap/SORTED_BAM
+EXT: "_sorted.bam"
+DEST: /data/Palmetto_sync/Projects/rajones_uhg4-208_rna
+CHOP: /data/Palmetto_sync/Projects/rajones_uhg4-208_rna/2_gsnap/SORTED_BAM/
+GTFGSNAP: /data/Palmetto_sync/Projects/rajones_uhg4-208_rna/7_ntr/DGRP2_RNASeq_ntr_v6.48.gtf

@@ -1,0 +1,55 @@
+configfile: "NTR.yaml"
+
+SAMPLES=sorted(glob_wildcards(config["SOURCE"]+"/{samples}"+config["EXT"]).samples)
+
+SAMPLES_SET = set(SAMPLES)
+SAMPLES_UNIQ = list(SAMPLES_SET)
+
+rule all:
+	input:
+		config["DEST"]+"/7_ntr/1_ntr_featurecounts/combined_ntr_counts.txt"
+		
+rule featurecounts:
+    input:
+        SORTBAM=config["SOURCE"]+"/{SAMPLES_UNIQ}"+config["EXT"]
+    output:
+        COUNTS=config["DEST"]+"/7_ntr/1_ntr_featurecounts/{SAMPLES_UNIQ}_ntr_counts.txt"
+    params:
+        GTFGSNAP=config["GTFGSNAP"]
+    resources: cpus=8, mem_mb=20000, time_min=1440
+    shell:
+        """
+        module load subread/1.6.4
+        featureCounts \
+        -a {params.GTFGSNAP} \
+        -t exon \
+        -F GTF \
+        -g gene_id \
+        -T 40 \
+        -s 0 \
+        -p \
+        -D 1200 \
+        -o {output.COUNTS} \
+        {input.SORTBAM}
+        """
+rule aggregate:
+    input:
+        list=expand(config["DEST"]+"/7_ntr/1_ntr_featurecounts/{SAMPLES_UNIQ}_ntr_counts.txt",SAMPLES_UNIQ=SAMPLES_UNIQ)
+    params:
+        config["CHOP"]
+    output:
+        config["DEST"]+"/7_ntr/1_ntr_featurecounts/combined_ntr_counts.txt"
+    resources: cpus=2, mem_mb=10000, time_min=1440
+    run:
+        import pandas as pd
+        list = input.list
+        out1 = []
+        for f in list:
+            df = pd.read_csv(f,sep='\t',header=[1])
+            out1.append(df.iloc[:,6])
+        df = pd.concat(out1,axis=1)
+        S_1 = pd.read_csv(list[1],sep='\t',header=[1])
+        df.insert(0,'Geneid', S_1.iloc[:,0])
+        df.insert(1,'length',S_1.iloc[:,5])
+        df.columns = df.columns.str.replace(params[0],'')
+        df.to_csv(output[0],index=False,header=True,sep="\t",encoding='utf-8')

@@ -1,0 +1,2401 @@
+/** SAS code for Behavioral Assays
+Last edited: 2022-03-30 by Rebecca MacPherson **/
+
+/**Chill Coma analyses
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.chill_coma;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.chill_coma; RUN;
+
+
+%web_open_table(WORK.chill_coma);
+
+/**						FULL MODEL**/
+proc glm data=WORK.chill_coma plots=none;
+	class Line_pooled Sex;
+	model Time=Line_pooled Sex Line_pooled*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.chill_coma out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line_pooled;
+	model Time=Line_pooled/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+
+
+**/
+
+
+/************IIMPORT DATA*/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.chill_coma;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.chill_coma; RUN;
+
+
+%web_open_table(WORK.chill_coma);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.chill_coma
+where Line IN ('208wt','208A');
+
+RUN;
+/** 							FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.chill_coma
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**								FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.chill_coma
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**				FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=WORK.chill_coma;
+
+
+
+
+
+
+
+
+/**					Ethanol Sedation Sensitivity **/
+
+
+/**Ethanol sensitivity analyses
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.EtOHSens;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.EtOHSens; RUN;
+
+
+%web_open_table(WORK.EtOHSens);
+
+
+/**					FULL MODEL**/
+proc glm data=WORK.EtOHSens plots=none;
+	class Line_pooled Sex;
+	model Time=Line_pooled Sex Line_pooled*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.EtOHSens out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line_pooled;
+	model Time=Line_pooled /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.EtOHSens;
+run;
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+
+
+**/
+
+
+
+/** ETHANOL SENSITIVITY  *******************************************/
+/** *** IMPORT DATA - LARGE SET */
+
+
+/************ REPLACE FILE NAME, OUT= FILE NAME and the resulting WORK._____, and the phenotypic variable throughout document*/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.EtOHSens;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.EtOHSens; RUN;
+
+
+%web_open_table(WORK.EtOHSens);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.EtOHSens
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**					FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.EtOHSens
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**					FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+/********************************/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.EtOHSens
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**					FULL MODEL**/
+proc glm data=WORK.PARSED plots=none;
+	class Line Sex;
+	model Time=Line Sex Line*Sex /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc glm data=Work.TempDataSorted  plots=none 
+		;
+	class Line;
+	model Time=Line /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=WORK.EtOHSens;
+run;
+
+
+
+
+
+
+
+
+
+
+
+
+/** Heat Shock Assay 								**/
+
+
+/**Heat Shock analyses
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=xlsx
+	OUT=WORK.heat_shock;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.heat_shock; RUN;
+
+
+%web_open_table(WORK.heat_shock);
+
+/**					FULL  MODEL**/
+proc mixed data=WORK.heat_shock method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Time;
+	model Percent_Dead=Line_pooled Sex Line_pooled*Sex/;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.heat_shock out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Time;
+	model Percent_Dead=Line_pooled/;
+	random Rep(Line_pooled) /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+
+
+**/
+
+
+
+/************ REPLACE FILE NAME, OUT= FILE NAME and the resulting WORK._____, and the phenotypic variable throughout document*/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=xlsx
+	OUT=WORK.heat_shock;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.heat_shock; RUN;
+
+
+%web_open_table(WORK.heat_shock);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.heat_shock
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**							FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Time;
+	model Percent_Dead=Line Sex Line*Sex/;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Time;
+	model Percent_Dead=Line/;
+	random Rep(Line) /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.heat_shock
+where Line IN ('208wt','208F');
+
+RUN;
+
+/** 				FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Time;
+	model Percent_Dead=Line Sex Line*Sex/;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Time;
+	model Percent_Dead=Line/;
+	random Rep(Line) /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.heat_shock
+where Line IN ('208wt','208G');
+
+RUN;
+/** 				FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Time;
+	model Percent_Dead=Line Sex Line*Sex/;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Time;
+	model Percent_Dead=Line/;
+	random Rep(Line) /;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+
+proc delete data=Work.heat_shock;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**			Mating Phenotypes				***/
+
+/**Mating analyses - LATENCY
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+FILENAME REFFILE 'path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.latency;
+	GETNAMES=YES;
+	GUESSSINGROWS=70;
+RUN;
+
+PROC CONTENTS DATA=WORK.latency; RUN;
+
+
+%web_open_table(WORK.latency);
+
+/* parse out data such that only the wildtype vs mutants are used, not the heterogeneous across sex matings (208G_F x wt_M etc)*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Latency
+where Line IN ('208wt','208A', '208F','208G');
+
+RUN;
+
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line_pooled;
+	model latency_seconds=Line_pooled/;
+run;
+
+proc delete data=WORK.PARSED;
+
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control)
+**/
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.latency
+where Line IN ('208wt','208A');
+
+RUN;
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model latency_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.latency
+where Line IN ('208wt','208F');
+
+RUN;
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model latency_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.latency
+where Line IN ('208wt','208G');
+
+RUN;
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model latency_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.latency
+where Line IN ('208wt','wt_FxG_M');
+
+RUN;
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model latency_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.latency
+where Line IN ('208wt','G_Fxwt_M');
+
+RUN;
+/** 			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model latency_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+
+proc delete data=Work.latency;
+
+
+
+
+
+
+
+
+
+
+/** 			Mating Duration **/
+
+
+/**Mating analyses - DURATION
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+REPLACE
+	DBMS=csv
+	OUT=WORK.Duration;
+	GETNAMES=YES;
+	GUESSINGROWS=60;
+RUN;
+
+PROC CONTENTS DATA=WORK.Duration; RUN;
+
+
+%web_open_table(WORK.Duration);
+
+/* parse out data such that only the wildtype vs mutants are used, not the heterogeneous across sex matings (208G_F x wt_M etc)*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','208A', '208F','208G');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line_pooled;
+	model duration_seconds=Line_pooled/;
+run;
+
+proc delete data=WORK.PARSED;
+
+proc delete data=WORK.duration
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control)
+
+
+**/
+/************ REPLACE FILE NAME, OUT= FILE NAME and the resulting WORK._____, and the phenotypic variable throughout document*/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+REPLACE
+	DBMS=xlsx
+	OUT=WORK.Duration;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.Duration; RUN;
+
+
+%web_open_table(WORK.Duration);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','208A');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model duration_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','208F');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model duration_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','208G');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model duration_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','G_Fxwt_M');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model duration_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Duration
+where Line IN ('208wt','wt_FxG_M');
+
+RUN;
+/**			RUN MODEL**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model duration_seconds=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+
+proc delete data=WORK.Duration;
+
+
+
+
+
+
+
+
+
+
+
+/** Development Timing - Day of Eclosion **/
+
+
+/**Development Time analyses
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+
+/** IMPORT DATA***/
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.devtime;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.devtime; RUN;
+
+
+%web_open_table(WORK.devtime);
+
+/**						FULL MODEL**/
+proc mixed data=WORK.devtime method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex WingPhenotype Repvial;
+	model Day=Line_pooled Sex WingPhenotype Line_pooled*Sex Line_pooled*WingPhenotype Sex*WingPhenotype Line_pooled*Sex*WingPhenotype /;
+	random Repvial(Line_pooled) Sex*Repvial(Line_pooled) WingPhenotype*Repvial(Line_pooled) Sex*WingPhenotype*Repvial(Line_pooled) /;
+run;
+
+
+/**						REDUCE BY SEX**/
+proc sort data=WORK.devtime out=work.TempSortedSex;
+	by Sex;
+run;
+
+/**						BY-SEX MODEL**/
+proc mixed data=WORK.TempSortedSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Repvial WingPhenotype;
+	model Day=Line_pooled WingPhenotype Line_pooled*WingPhenotype/;
+	random Repvial(Line_pooled) WingPhenotype*Repvial(Line_pooled)/;
+	by Sex;
+
+
+/**						REDUCE BY WING PHENOTYPE**/
+proc sort data=WORK.devtime out=work.TempSortedWing;
+	by WingPhenotype;
+run;
+/**						BY-WING PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWing method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Repvial Sex;
+	model Day=Line_pooled Sex Line_pooled*Sex/;
+	random Repvial(Line_pooled) Sex*Repvial(Line_pooled)/;
+	by WingPhenotype;
+run;
+
+/**						REDUCE BY SEX AND WING PHENOTYPE**/
+proc sort data=WORK.devtime out=work.TempSortedWingSex;
+	by WingPhenotype Sex;
+run;
+/**						BY-SEX BY-WING  PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWingSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Repvial Sex;
+	model Day=Line_pooled/;
+	random Repvial(Line_pooled)/;
+	by WingPhenotype Sex;
+run;
+
+
+proc delete data=WORK.devtime;
+proc delete data=WORK.TempSortedWing;
+proc delete data=WORK.TempSortedWingSex;
+proc delete data=WORK.TempSortedSex;
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+
+
+**/
+
+
+/********************************************************PARSE OUT DATA***/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.devtime
+where Line IN ('208wt','208A');
+
+RUN;
+/**						FULL MODEL**/
+
+proc mixed data=WORK.Parsed method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex WingPhenotype Repvial;
+	model Day=Line Sex WingPhenotype Line*Sex Line*WingPhenotype Sex*WingPhenotype Line*Sex*WingPhenotype /;
+	random Repvial(Line) Sex*Repvial(Line) WingPhenotype*Repvial(Line) Sex*WingPhenotype*Repvial(Line) /;
+run;
+
+/**						REDUCE BY SEX**/
+proc sort data=WORK.Parsed out=work.TempSortedSex;
+	by Sex;
+run;
+
+/**						BY-SEX MODEL**/
+proc mixed data=WORK.TempSortedSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial WingPhenotype;
+	model Day=Line WingPhenotype Line*WingPhenotype/;
+	random Repvial(Line) WingPhenotype*Repvial(Line)/;
+	by Sex;
+
+
+/**						REDUCE BY WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWing;
+	by WingPhenotype;
+run;
+
+/**						BY-WING PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWing method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line Sex Line*Sex/;
+	random Repvial(Line) Sex*Repvial(Line)/;
+	by WingPhenotype;
+run;
+
+/**						REDUCE BY SEX AND WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWingSex;
+	by WingPhenotype Sex;
+run;
+
+/**						BY-SEX BY-WING  PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWingSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line/;
+	random Repvial(Line)/;
+	by WingPhenotype Sex;
+run;
+
+
+proc delete data=WORK.TempSortedWing;
+proc delete data=WORK.TempSortedWingSex;
+proc delete data=WORK.TempSortedSex;
+proc delete data=WORK.PARSED;
+proc delete data=work.devtime;
+
+
+/********************************************************PARSE OUT DATA***/
+
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.devtime
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.Parsed method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex WingPhenotype Repvial;
+	model Day=Line Sex WingPhenotype Line*Sex Line*WingPhenotype Sex*WingPhenotype Line*Sex*WingPhenotype /;
+	random Repvial(Line) Sex*Repvial(Line) WingPhenotype*Repvial(Line) Sex*WingPhenotype*Repvial(Line) /;
+run;
+
+/**						REDUCE BY SEX**/
+proc sort data=WORK.Parsed out=work.TempSortedSex;
+	by Sex;
+run;
+
+/**						BY-SEX MODEL**/
+proc mixed data=WORK.TempSortedSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial WingPhenotype;
+	model Day=Line WingPhenotype Line*WingPhenotype/;
+	random Repvial(Line) WingPhenotype*Repvial(Line)/;
+	by Sex;
+
+
+/**						REDUCE BY WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWing;
+	by WingPhenotype;
+run;
+
+/**						BY-WING PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWing method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line Sex Line*Sex/;
+	random Repvial(Line) Sex*Repvial(Line)/;
+	by WingPhenotype;
+run;
+
+/**						REDUCE BY SEX AND WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWingSex;
+	by WingPhenotype Sex;
+run;
+
+/**						BY-SEX BY-WING  PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWingSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line/;
+	random Repvial(Line)/;
+	by WingPhenotype Sex;
+run;
+
+
+proc delete data=WORK.TempSortedWing;
+proc delete data=WORK.TempSortedWingSex;
+proc delete data=WORK.TempSortedSex;
+proc delete data=WORK.PARSED;
+proc delete data=work.devtime;
+
+/********************************************************PARSE OUT DATA***/
+
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select * from WORK.devtime
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.Parsed method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex WingPhenotype Repvial;
+	model Day=Line Sex WingPhenotype Line*Sex Line*WingPhenotype Sex*WingPhenotype Line*Sex*WingPhenotype /;
+	random Repvial(Line) Sex*Repvial(Line) WingPhenotype*Repvial(Line) Sex*WingPhenotype*Repvial(Line) /;
+run;
+
+/**						REDUCE BY SEX**/
+proc sort data=WORK.Parsed out=work.TempSortedSex;
+	by Sex;
+run;
+
+/**						BY-SEX MODEL**/
+proc mixed data=WORK.TempSortedSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial WingPhenotype;
+	model Day=Line WingPhenotype Line*WingPhenotype/;
+	random Repvial(Line) WingPhenotype*Repvial(Line)/;
+	by Sex;
+
+
+/**						REDUCE BY WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWing;
+	by WingPhenotype;
+run;
+
+/**						BY-WING PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWing method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line Sex Line*Sex/;
+	random Repvial(Line) Sex*Repvial(Line)/;
+	by WingPhenotype;
+run;
+
+/**						REDUCE BY SEX AND WING PHENOTYPE**/
+proc sort data=WORK.Parsed out=work.TempSortedWingSex;
+	by WingPhenotype Sex;
+run;
+
+/**						BY-SEX BY-WING  PHENOTYPE MODEL**/
+proc mixed data=WORK.TempSortedWingSex method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Repvial Sex;
+	model Day=Line/;
+	random Repvial(Line)/;
+	by WingPhenotype Sex;
+run;
+
+
+proc delete data=WORK.devtime;
+proc delete data=WORK.TempSortedWing;
+proc delete data=WORK.TempSortedWingSex;
+proc delete data=WORK.TempSortedSex;
+proc delete data=WORK.PARSED;
+proc delete data=work.devtime;
+
+
+
+
+
+
+
+/**				Viability analyses
+First: Lines pooled together, broadly Control vs Mutant
+
+**/
+
+/** 			IMPORT DATA*/
+FILENAME REFFILE '/home/rajones/sasuser.v94/uhg4/Viability.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.viability;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.viability; RUN;
+
+
+%web_open_table(WORK.viability);
+
+
+/**						BOTH SEXES**/
+proc glm data=WORK.viability  plots=none ;
+	class Line_pooled;
+	model v_total=Line_pooled/;
+run;
+
+/**						MALES**/
+proc glm data=WORK.viability  plots=none ;
+	class Line_pooled;
+	model v_male=Line_pooled/;
+run;
+
+/**						FEMALES**/
+proc glm data=WORK.viability  plots=none ;
+	class Line_pooled;
+	model v_female=Line_pooled/;
+run;
+
+
+proc delete data=Work.viability;
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+
+
+**/
+
+/************ IMPORT DATA */
+FILENAME REFFILE '/folders/myfolders/Uhg4/viability.xlsx';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=xlsx
+	OUT=WORK.viability;
+	GETNAMES=YES;
+RUN;
+
+PROC CONTENTS DATA=WORK.viability; RUN;
+
+
+%web_open_table(WORK.viability);
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.viability
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**						BOTH SEXES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_total=Line/;
+run;
+
+/**						MALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_male=Line/;
+run;
+
+/**						FEMALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_female=Line/;
+run;
+
+
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.viability
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**						BOTH SEXES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_total=Line/;
+run;
+
+/**						MALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_male=Line/;
+run;
+
+/**						FEMALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_female=Line/;
+run;
+proc delete data=WORK.PARSED;
+
+/********************************************************PARSE OUT DATA*/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.viability
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						BOTH SEXES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_total=Line/;
+run;
+
+/**						MALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_male=Line/;
+run;
+
+/**						FEMALES**/
+proc glm data=WORK.PARSED  plots=none ;
+	class Line;
+	model v_female=Line/;
+run;
+
+proc delete data=WORK.PARSED;
+proc delete data=Work.viability;
+
+
+
+
+
+
+
+
+
+
+
+
+/*************** SLEEP AND ACTIVITY *****/
+
+
+/**DAM sleep/activity analyses
+First: Line_pooleds pooled together, broadly Control vs Mutant
+**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_daily_locomotor_activity;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_daily_locomotor_activity; RUN;
+
+
+%web_open_table(WORK.Ind_daily_locomotor_activity);
+/*******************************************************/
+
+/***********************/
+/*** FULL MODEL**/
+proc mixed data=WORK.Ind_daily_locomotor_activity method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model Activity=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.Ind_daily_locomotor_activity out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model Activity=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.Ind_daily_locomotor_activity;
+run;
+
+
+/**** 		DAY SLEEP 		**/
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.day_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.day_sleep; RUN;
+
+
+%web_open_table(WORK.day_sleep);
+/*******************************************************/
+
+
+/************FULL MODEL************/
+proc mixed data=WORK.day_sleep method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model mean_sleep_per_ind=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.day_sleep out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model mean_sleep_per_ind=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.day_sleep;
+run;
+
+/**** 		NIGHT SLEEP 		**/
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.night_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.night_sleep; RUN;
+
+
+%web_open_table(WORK.night_sleep);
+/*******************************************************/
+
+/*********	FULL MODEL **************/
+proc mixed data=WORK.night_sleep method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model mean_sleep_per_ind=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.night_sleep out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model mean_sleep_per_ind=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.night_sleep;
+run;
+
+
+/**** 		SLEEP BOUT COUNT DAY		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_day;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_day; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_day);
+/*******************************************************/
+
+
+/**********FULL MODEL*************/
+
+proc mixed data=WORK.Ind_sleep_bout_counts_day method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model Bout_Count=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.Ind_sleep_bout_counts_day out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model Bout_Count=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.Ind_sleep_bout_counts_day;
+run;
+
+
+/**** 		SLEEP BOUT COUNT NIGHT		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_night;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_night; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_night);
+/*******************************************************/
+
+/***********************/
+/**********FULL MODEL*************/
+
+proc mixed data=WORK.Ind_sleep_bout_counts_night method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model Bout_Count=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.Ind_sleep_bout_counts_night out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model Bout_Count=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.Ind_sleep_bout_counts_night;
+run;
+
+
+/**** 		ACTIVITY BOUT LENGTH DAY		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_activity_bout_length_day;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_activity_bout_length_day; RUN;
+
+
+%web_open_table(WORK.Ind_activity_bout_length_day);
+/*******************************************************/
+
+/**********FULL MODEL*************/
+
+
+proc mixed data=WORK.Ind_activity_bout_length_day method=type3 plots=(residualPanel) alpha=0.05;
+	class Line_pooled Sex Rep;
+	model Bout_Length=Line_pooled Sex Line_pooled*Sex /;
+	random Rep(Line_pooled*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.Ind_activity_bout_length_day out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line_pooled Rep;
+	model Bout_Length=Line_pooled /;
+	random Rep(Line_pooled)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=WORK.Ind_activity_bout_length_day;
+run;
+
+
+
+
+
+
+
+/**below: 
+
+analysis with pairwise (one mutant vs one control), sexes together and separately.
+**/
+
+/**		LOCOMOTOR ACTIVITY **/
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/folders/myfolders/Uhg4/Ind_daily_locomotor_activity_data_nodead_compiled.csv';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_daily_locomotor_activity;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_daily_locomotor_activity; RUN;
+
+
+%web_open_table(WORK.Ind_daily_locomotor_activity);
+/*******************************************************/
+
+/************PARSE DATA***********/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('208wt','208A');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Activity=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Activity=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+/***************PARSE OUT DATA********/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('208wt','208F');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Activity=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Activity=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_daily_locomotor_activity
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Activity=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Activity=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=WORK.Ind_daily_locomotor_activity;
+run;
+
+/*****  		DAY SLEEP ***/
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.day_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.day_sleep; RUN;
+
+
+%web_open_table(WORK.day_sleep);
+/*******************************************************/
+
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('208wt','208A');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***********PARSE DATA************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/***************PARSE DATA********/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.day_sleep
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=WORK.day_sleep;
+run;
+
+
+/*** NIGHT SLEEP		**/
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.night_sleep;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.night_sleep; RUN;
+
+
+%web_open_table(WORK.night_sleep);
+/*******************************************************/
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/************PARSE DATA***********/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/*********PARSE DATA**************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.night_sleep
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model mean_sleep_per_ind=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model mean_sleep_per_ind=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=WORK.night_sleep;
+run;
+
+
+
+
+
+/*** SLEEP BOUT COUNT DAY		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_day;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_day; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_day);
+/*******************************************************/
+
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('208wt','208F');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+proc delete data=Work.PARSED;
+run;
+proc delete data=Work.TempDataSorted;
+run;
+
+/*********PARSE DATA**************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_day
+where Line IN ('208wt','208G');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+proc delete data=WORK.Ind_sleep_bout_counts_day;
+run;
+
+/*** SLEEP BOUT COUNT NIGHT		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_sleep_bout_counts_night;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_sleep_bout_counts_night; RUN;
+
+
+%web_open_table(WORK.Ind_sleep_bout_counts_night);
+/*******************************************************/
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('208wt','208A');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('208wt','208F');
+
+RUN;
+
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_sleep_bout_counts_night
+where Line IN ('208wt','208G');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Count=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Count=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+proc delete data=WORK.Ind_sleep_bout_counts_night;
+run;
+
+
+/*** ACTIVITY BOUT LENGTH DAY		**/
+
+
+/*******************************IMPORT*/
+
+
+FILENAME REFFILE '/path/to/working/directory/filename';
+
+PROC IMPORT DATAFILE=REFFILE
+	DBMS=csv
+	OUT=WORK.Ind_activity_bout_length_day;
+	GETNAMES=YES; GUESSINGROWS=100;
+RUN;
+
+PROC CONTENTS DATA=WORK.Ind_activity_bout_length_day; RUN;
+
+
+%web_open_table(WORK.Ind_activity_bout_length_day);
+/*******************************************************/
+
+/*********PARSE DATA**************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_activity_bout_length_day
+where Line IN ('208wt','208A');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Length=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Length=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+
+/**********PARSE DATA*************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_activity_bout_length_day
+where Line IN ('208wt','208F');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Length=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Length=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+/***********PARSE DATA************/
+PROC SQL; 
+CREATE TABLE WORK.PARSED AS
+Select *
+from WORK.Ind_activity_bout_length_day
+where Line IN ('208wt','208G');
+
+RUN;
+/**						FULL MODEL**/
+proc mixed data=WORK.PARSED method=type3 plots=(residualPanel) alpha=0.05;
+	class Line Sex Rep;
+	model Bout_Length=Line Sex Line*Sex /;
+	random Rep(Line*Sex) /;
+run;
+
+/**                          REDUCED BY SEX**/
+ods noproctitle;
+ods graphics / imagemap=on;
+
+proc sort data=WORK.PARSED out=Work.TempDataSorted;
+	by Sex;
+run;
+
+proc mixed data=Work.TempDataSorted method=type3 plots=(residualPanel) 
+		alpha=0.05;
+	class Line Rep;
+	model Bout_Length=Line /;
+	random Rep(Line)/;
+	by Sex;
+run;
+
+
+proc delete data=Work.TempDataSorted;
+run;
+proc delete data=Work.PARSED;
+run;
+proc delete data=WORK.Ind_activity_bout_length_day;
+run;
+
